@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Country, SortOption } from "@/lib/types";
 import { CountryCard } from "./CountryCard";
@@ -11,34 +11,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 interface CountryListProps {
   countries: Country[];
 }
 
 export function CountryList({ countries }: CountryListProps) {
-  const [search, setSearch] = useState('');
-  const [sort, setSort] = useState<SortOption>('name-asc');
-  const [region, setRegion] = useState<string>('all');
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortOption>("name-asc");
+  const [region, setRegion] = useState<string>("all");
   const [page, setPage] = useState(1);
   const itemsPerPage = 12;
 
-  const regions = Array.from(new Set(countries.map(country => country.region)));
+  const regions = Array.from(
+    new Set(countries.map((country) => country.region))
+  );
 
   const filteredCountries = countries
-    .filter(country => 
-      country.name.common.toLowerCase().includes(search.toLowerCase()) &&
-      (region === 'all' || country.region === region)
+    .filter(
+      (country) =>
+        country.name.common.toLowerCase().includes(search.toLowerCase()) &&
+        (region === "all" || country.region === region)
     )
     .sort((a, b) => {
       switch (sort) {
-        case 'name-asc':
+        case "name-asc":
           return a.name.common.localeCompare(b.name.common);
-        case 'name-desc':
+        case "name-desc":
           return b.name.common.localeCompare(a.name.common);
-        case 'population-asc':
+        case "population-asc":
           return a.population - b.population;
-        case 'population-desc':
+        case "population-desc":
           return b.population - a.population;
         default:
           return 0;
@@ -71,22 +75,29 @@ export function CountryList({ countries }: CountryListProps) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Regions</SelectItem>
-            {regions.map(region => (
+            {regions.map((region) => (
               <SelectItem key={region} value={region}>
                 {region}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Select value={sort} onValueChange={(value) => setSort(value as SortOption)}>
+        <Select
+          value={sort}
+          onValueChange={(value) => setSort(value as SortOption)}
+        >
           <SelectTrigger className="md:w-48">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="name-asc">Name (A-Z)</SelectItem>
             <SelectItem value="name-desc">Name (Z-A)</SelectItem>
-            <SelectItem value="population-asc">Population (Low-High)</SelectItem>
-            <SelectItem value="population-desc">Population (High-Low)</SelectItem>
+            <SelectItem value="population-asc">
+              Population (Low-High)
+            </SelectItem>
+            <SelectItem value="population-desc">
+              Population (High-Low)
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -100,21 +111,21 @@ export function CountryList({ countries }: CountryListProps) {
       {totalPages > 1 && (
         <div className="flex justify-center gap-2">
           <button
-            onClick={() => setPage(p => Math.max(1, p - 1))}
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
             className="rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
           >
-            Previous
+            <IoIosArrowBack className="h-5 w-5" />
           </button>
           <span className="flex items-center">
             Page {page} of {totalPages}
           </span>
           <button
-            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
             className="rounded-md bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
           >
-            Next
+            <IoIosArrowForward className="h-5 w-5" />
           </button>
         </div>
       )}

@@ -5,6 +5,13 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 
+function createCountrySlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}
+
 async function getCountries(): Promise<Country[]> {
   const res = await fetch("https://restcountries.com/v3.1/all", {
     next: { revalidate: 86400 }, // Revalidate once per day
@@ -20,7 +27,7 @@ async function getCountries(): Promise<Country[]> {
 export async function generateStaticParams() {
   const countries = await getCountries();
   return countries.map((country) => ({
-    country: encodeURIComponent(country.name.common.toLowerCase()),
+    country: createCountrySlug(country.name.common),
   }));
 }
 
@@ -31,7 +38,7 @@ export async function generateMetadata({
 }) {
   const countries = await getCountries();
   const country = countries.find(
-    (c) => encodeURIComponent(c.name.common.toLowerCase()) === params.country
+    (c) => createCountrySlug(c.name.common) === params.country
   );
 
   if (!country) {
@@ -53,7 +60,7 @@ export default async function CountryPage({
 }) {
   const countries = await getCountries();
   const country = countries.find(
-    (c) => encodeURIComponent(c.name.common.toLowerCase()) === params.country
+    (c) => createCountrySlug(c.name.common) === params.country
   );
 
   if (!country) {
@@ -150,7 +157,7 @@ export default async function CountryPage({
                         <Link
                           key={border}
                           href={`/${encodeURIComponent(
-                            borderCountry.name.common.toLowerCase()
+                            createCountrySlug(borderCountry.name.common)
                           )}`}
                           className="rounded-full bg-secondary px-3 py-1 text-sm"
                         >

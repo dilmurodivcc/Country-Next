@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Country } from "@/lib/types";
@@ -10,8 +10,13 @@ interface CountryCardProps {
 }
 
 export function CountryCard({ country }: CountryCardProps) {
+  const countrySlug = country.name.common
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+
   return (
-    <Link href={`/${encodeURIComponent(country.name.common.toLowerCase())}`}>
+    <Link href={`/${countrySlug}`}>
       <Card className="h-full transition-transform hover:scale-105">
         <div className="relative h-48 w-full overflow-hidden rounded-t-lg">
           <Image
@@ -38,7 +43,7 @@ export function CountryCard({ country }: CountryCardProps) {
             </div>
             <div>
               <dt className="text-sm text-muted-foreground">Capital</dt>
-              <dd>{country.capital?.join(', ') || 'N/A'}</dd>
+              <dd>{country.capital?.join(", ") || "N/A"}</dd>
             </div>
           </dl>
         </CardContent>
